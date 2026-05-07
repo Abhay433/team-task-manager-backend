@@ -13,4 +13,5 @@ export const createUser = async (email, hashedPassword, name) => {
             role: "member",
         }
     });
+    return user;
 }

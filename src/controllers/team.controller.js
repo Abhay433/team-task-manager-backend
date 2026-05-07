@@ -22,10 +22,11 @@ export const addMember = async (req, res) => {
     try {
         const teamId = parseInt(req.params.teamId);
         const { userId } = req.body;
+        const currentUserId = req.user.id;
 
         if (!userId) return res.status(400).json({ message: 'userId is required' });
 
-        const member = await teamService.addMemberService(teamId, req.user.id, userId);
+        const member = await teamService.addMemberService(teamId, currentUserId, userId);
         res.status(201).json(member);
     } catch (error) {
         if (error.message === 'FORBIDDEN') {

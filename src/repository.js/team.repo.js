@@ -25,30 +25,38 @@ export const createTeamRepo = async (name, userId) => {
 }
 
 
-export const addMemberRepo = async (teamId, currentUserId, newUserId) => {
+export const addMemberRepo = async (teamId, currentUserId) => {
     const ownerCheck = await prisma.teamMember.findFirst({
-        where: { teamId: teamId, userId: currentUserId, role: 'owner' }
+        where: {
+            teamId: teamId,
+            userId: currentUserId,
+            role: 'owner'
+        }
     });
-
-    if (!ownerCheck) {
-        throw new Error('FORBIDDEN');
-    }
 
     return ownerCheck;
 }
 
 export const alreadyMemberRepo = async (teamId, newUserId) => {
     const alreadyMember = await prisma.teamMember.findFirst({
-        where: { teamId: teamId, userId: newUserId }
+        where: {
+            teamId: teamId,
+            userId: newUserId
+        }
     });
 
     return alreadyMember;
 }
 
-export const createMemberRepo = async (teamId, newUserId) => {
-    // Add new member — backend always sets role to MEMBER
+export const createMemberRepo = async (teamId, newUserId, addedBy) => {
+    // Add new member — backend always sets role to member
     const member = await prisma.teamMember.create({
-        data: { team_id: teamId, user_id: newUserId, role: 'MEMBER' }
+        data: {
+            teamId: teamId,
+            userId: newUserId,
+            role: 'member',
+            addedBy: addedBy
+        }
     });
 
     return member;

@@ -20,13 +20,15 @@ model Team {
 }
 
 model TeamMember {
-  id       Int         @id @default(autoincrement())
-  role     TeamRole    @default(member)
-  joinedAt DateTime    @default(now())
-  userId   Int
-  teamId   Int
-  team     Team        @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  user     table_users @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          Int          @id @default(autoincrement())
+  role        TeamRole     @default(member)
+  joinedAt    DateTime     @default(now())
+  userId      Int
+  teamId      Int
+  addedBy     Int?
+  team        Team         @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user        table_users  @relation("TeamMemberUser", fields: [userId], references: [id], onDelete: Cascade)
+  addedByUser table_users? @relation("AddedByUser", fields: [addedBy], references: [id])
 
   @@unique([userId, teamId])
 }
@@ -99,26 +101,30 @@ model TaskLabel {
 }
 
 model table_users {
-  id            Int          @id(map: "User_pkey") @default(autoincrement())
-  name          String
-  email         String       @unique(map: "User_email_key")
-  password      String
-  avatarUrl     String?
-  role          UserRole
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  id        Int      @id(map: "User_pkey") @default(autoincrement())
+  name      String
+  email     String   @unique(map: "User_email_key")
+  password  String
+  avatarUrl String?
+  role      UserRole
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   comments      Comment[]
-  projects      Project[]    @relation("ProjectCreator")
-  assignedTasks Task[]       @relation("AssignedTasks")
-  createdTasks  Task[]       @relation("CreatedTasks")
+  projects      Project[] @relation("ProjectCreator")
+  assignedTasks Task[]    @relation("AssignedTasks")
+  createdTasks  Task[]    @relation("CreatedTasks")
   teamsCreated  Team[]
-  memberships   TeamMember[]
+
+  teamMembers  TeamMember[] @relation("TeamMemberUser")
+  addedMembers TeamMember[] @relation("AddedByUser")
 }
 
 enum UserRole {
   admin
   member
 }
+
 enum TeamRole {
   owner
   admin

@@ -10,21 +10,24 @@ export const createTeamService = async (name, userId) => {
 
 export const addMemberService = async (teamId, currentUserId, newUserId) => {
 
-    const ownerCheck = await teamRepo.addMemberRepo(teamId, currentUserId, newUserId);
+    if (currentUserId === newUserId) {
+        throw new Error('You are already in the team');
+    }
 
+    const ownerCheck = await teamRepo.addMemberRepo(teamId, currentUserId);
 
     if (!ownerCheck) {
         throw new Error('FORBIDDEN');
     }
 
-    const alreadyMember = await teamRepo.addMemberRepo(teamId, currentUserId, newUserId);
+    const alreadyMember = await teamRepo.alreadyMemberRepo(teamId, newUserId);
 
 
     if (alreadyMember) {
         throw new Error('User is already a member of this team');
     }
 
-    const member = await teamRepo.createMemberRepo(teamId, currentUserId, newUserId);
+    const member = await teamRepo.createMemberRepo(teamId, newUserId, currentUserId);
     return member;
 };
 
