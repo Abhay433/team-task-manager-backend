@@ -76,4 +76,19 @@ export const getMembersRepo = async (teamId) => {
 
     return members;
 };
-
+export const findUserTeams = async (userId) => {
+    return await prisma.team.findMany({
+        where: {
+            members: {
+                some: {
+                    userId: userId
+                }
+            }
+        },
+        include: {
+            _count: {
+                select: { members: true, projects: true }
+            }
+        }
+    });
+};

@@ -15,3 +15,13 @@ export const createUser = async (email, hashedPassword, name) => {
     });
     return user;
 }
+
+export const findAllUsers = () => {
+    return prisma.table_users.findMany({
+        select: {
+            id: true,
+            name: true,
+            email: true
+        }
+    });
+}

@@ -36,3 +36,12 @@ export const login = async (req, res) => {
 export const me = async (req, res) => {
     res.status(200).json({ user: req.user });
 };
+
+export const getUsers = async (req, res) => {
+    try {
+        const users = await authService.getAllUsers();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};

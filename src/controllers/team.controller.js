@@ -46,3 +46,13 @@ export const getMembers = async (req, res) => {
         res.status(400).json({ message: error.message });
     }
 };
+
+export const getMyTeams = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const teams = await teamService.getUserTeamsService(userId);
+        res.status(200).json(teams);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};

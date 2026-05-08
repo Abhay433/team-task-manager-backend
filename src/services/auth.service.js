@@ -1,7 +1,11 @@
 import prisma from '../config/db.js';
 import bcrypt from 'bcryptjs';
 import { generateToken, sanitizeUser } from '../AuthMiddleware.js';
-import { findByEmail, createUser } from '../repository.js/auth.repo.js';
+import { findByEmail, createUser, findAllUsers } from '../repository.js/auth.repo.js';
+
+export const getAllUsers = async () => {
+    return await findAllUsers();
+};
 
 export const signup = async (userData) => {
     const { name, email, password } = userData;

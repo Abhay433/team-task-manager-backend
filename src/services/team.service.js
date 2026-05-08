@@ -41,3 +41,12 @@ export const getMembersService = async (teamId) => {
         role: m.role
     }));
 };
+
+export const getUserTeamsService = async (userId) => {
+    const teams = await teamRepo.findUserTeams(userId);
+    return teams.map(t => ({
+        ...t,
+        memberCount: t._count.members,
+        projectCount: t._count.projects
+    }));
+};
